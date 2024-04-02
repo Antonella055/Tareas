@@ -35,10 +35,17 @@ public class MenuInicial extends javax.swing.JFrame {
             new Musica().Reproducir("src/Sonidos/Menu.wav", -10.0f);
         }).start();
     
+          //validador 
+          String[] archivosABorrar = {"temporal.txt", "InfoPartida.txt", "aum.txt", "Partida.txt", "Inventario.txt", "pokemons_seleccionados.txt"};
+        for (String archivo : archivosABorrar) {
+            File file = new File(archivo);
+            if (file.exists()) {
+                file.delete();
+                System.out.println("Se ha borrado el archivo: " + archivo);
+            }
+        }
         
     }
-    
-    
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -170,10 +177,11 @@ public class MenuInicial extends javax.swing.JFrame {
         File partida= new File("PARTIDAGUARDADA.txt");
        if(!partida.exists()){
            JOptionPane.showMessageDialog(null, "No se ha guardado una partida aun");
-       }
-
+       }else{
+           if(partida.exists()){
        new PartidaCargada().setVisible(true);
-       this.dispose();
+       this.dispose();}}
+       
     }//GEN-LAST:event_CargarJuegoActionPerformed
 
     

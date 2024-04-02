@@ -6,6 +6,9 @@ package Objetos;
 
 import Estructuras.List;
 import Interfaces.Auxiliar;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.Scanner;
 
 /**
  *
@@ -18,15 +21,38 @@ public class Tienda {
     public Tienda() {
         regalosDisponibles = new List<>();
         // Agregar regalos disponibles en la tienda
-        regalosDisponibles.insertarFinal(new Regalo("Baya Aranja", 100)); 
-        regalosDisponibles.insertarFinal(new Regalo("Baya Caquic", 200));
-        regalosDisponibles.insertarFinal(new Regalo("Poke ball", 300));
-        regalosDisponibles.insertarFinal(new Regalo("Baya Zezra", 400));
-        regalosDisponibles.insertarFinal(new Regalo("baya Zanama", 500));
-        regalosDisponibles.insertarFinal(new Regalo("baya Ziuela", 600));
-        regalosDisponibles.insertarFinal(new Regalo("Baya Zidra", 700));
-        regalosDisponibles.insertarFinal(new Regalo("Baya Enigma", 800));
-        regalosDisponibles.insertarFinal(new Regalo("Caramelo raro", 900));
+        
+         try {
+            File archivo = new File("prueba.txt");  //prueba.txt contiene la base de datos de la tienda
+            Scanner scanner = new Scanner(archivo);
+
+            while (scanner.hasNextLine()) {
+                String linea = scanner.nextLine();
+                String[] datos = linea.split(",");
+
+                String nombre = datos[0].trim();
+                int valor = Integer.parseInt(datos[1].trim());
+                regalosDisponibles.insertarFinal(new Regalo(nombre, valor));
+            }
+
+            scanner.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        
+        
+        
+        
+//        regalosDisponibles.insertarFinal(new Regalo("Baya Aranja", 100)); 
+//        regalosDisponibles.insertarFinal(new Regalo("Baya Caquic", 200));
+//        regalosDisponibles.insertarFinal(new Regalo("Poke ball", 300));
+//        regalosDisponibles.insertarFinal(new Regalo("Baya Zezra", 400));
+//        regalosDisponibles.insertarFinal(new Regalo("baya Zanama", 500));
+//        regalosDisponibles.insertarFinal(new Regalo("baya Ziuela", 600));
+//        regalosDisponibles.insertarFinal(new Regalo("Baya Zidra", 700));
+//        regalosDisponibles.insertarFinal(new Regalo("Baya Enigma", 800));
+//        regalosDisponibles.insertarFinal(new Regalo("Caramelo raro", 900));
     }
 
     public List<Regalo> getRegalosDisponibles() {

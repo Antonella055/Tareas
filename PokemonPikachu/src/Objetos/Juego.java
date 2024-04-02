@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.util.Random;
 
 import javax.swing.JDialog;
+import javax.swing.JFormattedTextField;
 
 import javax.swing.JOptionPane;
 import javax.swing.JSpinner;
@@ -20,7 +21,7 @@ import javax.swing.SpinnerNumberModel;
 
 /**
  *
- * @author Antonella
+ * @author Antonella 
  */
 public class Juego {
      int Watts;
@@ -37,8 +38,18 @@ public class Juego {
         
     }
     
+    /**
+     * Metodo para obtener la cantidad apostada por el jugador 
+     * @param mensaje Mensaje para el usuario (Apuesta tus watts!)
+     * @param saldoActual El saldo que posee el usuario para ese momento
+     * @return 
+     */
      private int CantidadApostada(String mensaje, int saldoActual) {
-        JSpinner spinner = new JSpinner(new SpinnerNumberModel(0, 0, saldoActual, 1));
+        SpinnerNumberModel model = new SpinnerNumberModel(0, 0, saldoActual, 1);
+        JSpinner spinner = new JSpinner(model);
+        JFormattedTextField textField = ((JSpinner.DefaultEditor) spinner.getEditor()).getTextField();
+        textField.setEditable(false); // El usuario no puede escribir en el JSpinner
+
         int opcion = JOptionPane.showOptionDialog(
                 null,
                 spinner,
@@ -50,18 +61,28 @@ public class Juego {
                 null);
 
         if (opcion == JOptionPane.OK_OPTION) {
-            return (int) spinner.getValue();
+            int valorSeleccionado = (int) spinner.getValue();
+            //validacion de no meter un valor menor o igual a 0 , y menor o igual a su saldo actual
+            if (valorSeleccionado <= 0 || valorSeleccionado > saldoActual) {
+                JOptionPane.showMessageDialog(null, "La cantidad apostada debe ser mayor a 0", "Error", JOptionPane.ERROR_MESSAGE);
+                return CantidadApostada(mensaje, saldoActual); // Vuelve a solicitar la cantidad apostada
+            } else {
+                return valorSeleccionado;
+            }
         } else {
             return -1; // El jugador canceló la selección
         }
-    }
+}
 
     
+     /**
+      * Juego cartaMasAlta
+      * @throws IOException 
+      */
     public void jugarCartaMasAlta() throws IOException {
-        
          boolean jugadorGano= false;
         //Cantidad de la apuesta
-        int cantidadApostada = CantidadApostada("Seleccione la cantidad de watts para apostar", jugador.getSaldo());
+        int cantidadApostada = CantidadApostada("Apuesta tus watts!", jugador.getSaldo());
         // Verificar si el jugador canceló la selección o si la cantidad seleccionada excede su saldo
         if (cantidadApostada == -1 || cantidadApostada > jugador.getSaldo()) {
             JOptionPane.showMessageDialog(null, "Apuesta inválida. Por favor, seleccione una cantidad válida.", "Error", JOptionPane.ERROR_MESSAGE);
@@ -71,9 +92,6 @@ public class Juego {
         //REstarle el saldo que aposto
         jugador.decrementarSaldo(cantidadApostada);
         
-       
-        
-
         Watts=jugador.getSaldo();
         // Generar el número aleatorio de la carta escogida por el Pokémon
         int cartaPokemon = generarCartaAleatoria();
@@ -120,7 +138,7 @@ public class Juego {
             jugador.incrementarSaldo(cantidadApostada*2);
         }else{
              askAumento(true);
-             JOptionPane.showMessageDialog(null, "Pachirisu se alegra de haberte ganado! (+1)Relacion");
+             JOptionPane.showMessageDialog(null, "Pachirisu se alegra de haberte ganado! ");
         }
 
         System.out.println("Saldo:"+jugador.getSaldo());
@@ -131,6 +149,10 @@ public class Juego {
         return Watts;
     }
     
+    /**
+     * Uso del Random para generar una carta aleatoria en el juego de Carta mas alta
+     * @return la carta generada 
+     */
       private int generarCartaAleatoria() {
         Random random = new Random();
         return random.nextInt(13) + 1; // Genera un número entre 1 y 13
@@ -156,6 +178,11 @@ public class Juego {
         return resultado;
     }
       
+      /**
+       * Juego de Adivinanza
+       * @param regalosDisponibles los regalos disponibles para escoger 
+       * @throws IOException 
+       */
       public void jugarAdivinaza(List<Regalo> regalosDisponibles) throws IOException{
           //Comprueba que el pokemon tenga al menos 2 regalos en su inventario para que pueda jugar
         
@@ -166,7 +193,7 @@ public class Juego {
         }
         
         //Apuesta
-       int cantidadApostada = CantidadApostada("Seleccione la cantidad de watts para apostar", jugador.getSaldo());
+       int cantidadApostada = CantidadApostada("Apuesta tus watts!", jugador.getSaldo());
         // Verificar si el jugador canceló la selección o si la cantidad seleccionada excede su saldo
         if (cantidadApostada == -1 || cantidadApostada > jugador.getSaldo()) {
             JOptionPane.showMessageDialog(null, "Apuesta inválida. Por favor, seleccione una cantidad válida.", "Error", JOptionPane.ERROR_MESSAGE);
@@ -207,7 +234,7 @@ public class Juego {
                 JOptionPane.showMessageDialog(null, "¡Has adivinado! Pachirisu estaba pensando en " + regalosDisponibles.get(seleccionUsuario).getNombre() + ".", "¡Felicidades!", JOptionPane.INFORMATION_MESSAGE);
                  jugador.incrementarSaldo(cantidadApostada * 2); // Incrementar el saldo del jugador
             } else {
-                JOptionPane.showMessageDialog(null, "Lo siento, Pachirisu estaba pensando en " + regalosDisponibles.get(nroAleatorio).getNombre() + "."+" (+1)Relacion", "¡Inténtalo de nuevo!", JOptionPane.INFORMATION_MESSAGE);
+                JOptionPane.showMessageDialog(null, "Lo siento, Pachirisu estaba pensando en " + regalosDisponibles.get(nroAleatorio).getNombre() + ".", "¡Inténtalo de nuevo!", JOptionPane.INFORMATION_MESSAGE);
                 askAumento(true);
             }
         } catch (NumberFormatException e) {

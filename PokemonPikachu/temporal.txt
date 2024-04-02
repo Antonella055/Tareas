@@ -1,1 +1,0 @@
-Relacion:100, Pokemon: Pikachu, Inventario: [Baya Aranja]

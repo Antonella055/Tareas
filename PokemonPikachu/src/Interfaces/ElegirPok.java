@@ -36,7 +36,7 @@ public class ElegirPok extends javax.swing.JFrame {
         initComponents();
         
         
-        
+         new Musica().Detener();
             new Thread(() -> {
         try {
             // Mini retraso para obtener los datos de los watts correctamente

@@ -30,7 +30,12 @@ public class Auxiliar {
 
     
     
-
+/**
+ * Metodos para cargar los watts en un archivo
+ * Se usa para la actualizacion de los watts por cada segundo, ademas de su aumento
+ * @param watts watts a almacenar
+ * @throws IOException 
+ */
     public void procesaWatts(int watts) throws IOException {
         FileWriter writer = new FileWriter("watts.txt");
         if (ImprimirWatts()) {
@@ -51,9 +56,10 @@ public class Auxiliar {
     }
 
  
-    
-    
-    
+    /**
+     * Lee los watts guardados 
+     * @return 
+     */
     public int obtenerWatts() {
         try (BufferedReader br = new BufferedReader(new FileReader("watts.txt"))) {
             wattsRegistrados = Integer.parseInt(br.readLine());
@@ -71,6 +77,9 @@ public class Auxiliar {
     public boolean ImprimirWatts() {
         return imprimirWatts;
     }
+    
+    
+    
     
      public List<String> cargarInventario() {
          Inventario= new List<>();

@@ -29,7 +29,7 @@ public class Partida {
             JOptionPane.showMessageDialog(null, "No has jugado lo suficiente para guardar la partida!", "Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
-        new MenuPrincipal().StopReloj();
+//        new MenuPrincipal().StopReloj();
         JOptionPane.showMessageDialog(null, "Partida guardada correctamente", "Guardar Partida", JOptionPane.INFORMATION_MESSAGE);
         try (BufferedReader readerInfoPartida = new BufferedReader(new FileReader(archivoInfoPartida));
              BufferedReader readerTemporal = new BufferedReader(new FileReader(archivoTemporal));

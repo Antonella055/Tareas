@@ -42,7 +42,7 @@ public class TiendaInterfaz extends javax.swing.JFrame {
         initComponents();
         Inventario= new List<>();
         tabla.setModel(leerDatosDesdeArchivo("prueba.txt"));
-      
+         new Musica().Detener();
         new Thread(() -> {
           new Musica().Reproducir("src/Sonidos/Tienda.wav", -10.0f);
       }).start();
@@ -367,41 +367,46 @@ public class TiendaInterfaz extends javax.swing.JFrame {
            JOptionPane.showMessageDialog(null, "No tienes los watts necesarios para comprar todo eso! ", "Fondo Insuficiente", JOptionPane.ERROR_MESSAGE);
            
        }else if(credito>= montoAcumulado){
-          credito -= montoAcumulado;
-          watts.setText(String.valueOf(credito));
-        JOptionPane.showMessageDialog(null, "La compra se realizó exitosamente", "Compra exitosa", JOptionPane.INFORMATION_MESSAGE);
-       
-         new Auxiliar().saveToTxt(String.valueOf(montoAcumulado), "aum.txt");
-        
-        
-        
-         new ElegirPok().setVisible(true);
-    
-        //Guardar el Inventario
-        String texto=listacompra.getText();
-        String[] lineas = texto.split("\n");
-        for (String linea : lineas) {
-            Inventario.insertarFinal(linea); }
-        
-        try {
-        // Especifica la ruta y el nombre del archivo
-        String rutaArchivo = "Inventario.txt";
-            
-            try ( // Crea un BufferedWriter para escribir en el archivo
-                    BufferedWriter writer = new BufferedWriter(new FileWriter(rutaArchivo))) {
-                // Escribe cada Pokémon en una línea del archivo
-                for (int i = 0; i < Inventario.getSize(); i++) {
-                    String pokemons = Inventario.get(i);
-                    writer.write(pokemons);
-                    writer.newLine(); 
-               
-                }}
-        
+           
+           String texto=listacompra.getText();
+           if(texto.isEmpty()){
+               JOptionPane.showMessageDialog(null, "No has agregado nada al carro!");
+           }else{
+           
+                    credito -= montoAcumulado;
+                    watts.setText(String.valueOf(credito));
+                  JOptionPane.showMessageDialog(null, "La compra se realizó exitosamente", "Compra exitosa", JOptionPane.INFORMATION_MESSAGE);
+
+                   new Auxiliar().saveToTxt(String.valueOf(montoAcumulado), "aum.txt");
+
+
+                   new ElegirPok().setVisible(true);
+
+                  //Guardar el Inventario
+                  texto=listacompra.getText();
+                  String[] lineas = texto.split("\n");
+                  for (String linea : lineas) {
+                      Inventario.insertarFinal(linea); }
+
+                  try {
+                  // Especifica la ruta y el nombre del archivo
+                  String rutaArchivo = "Inventario.txt";
+
+                      try ( // Crea un BufferedWriter para escribir en el archivo
+                              BufferedWriter writer = new BufferedWriter(new FileWriter(rutaArchivo))) {
+                          // Escribe cada Pokémon en una línea del archivo
+                          for (int i = 0; i < Inventario.getSize(); i++) {
+                              String pokemons = Inventario.get(i);
+                              writer.write(pokemons);
+                              writer.newLine(); 
+
+                          }}
+                  
     } catch (IOException e) {
         System.err.println("Error al escribir en el archivo: " + e.getMessage());
     }
          setVisible(false);
-       }   
+           }}
         
       
     }//GEN-LAST:event_pagarActionPerformed
