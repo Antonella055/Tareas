@@ -14,6 +14,7 @@ import java.awt.event.ActionListener;
 
 
 import java.io.BufferedWriter;
+import java.io.File;
 
 import java.io.FileNotFoundException;
 
@@ -124,7 +125,7 @@ public class PartidaCargada extends javax.swing.JFrame {
           
            
            if(Aumento()){
-               Watts+=300;
+               Watts+=10;
            }
             if (Aumento2()) {
                 Watts+=10;
@@ -355,6 +356,45 @@ public class PartidaCargada extends javax.swing.JFrame {
     private void VolverMenuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_VolverMenuActionPerformed
         new Musica().Detener();
         setVisible(false);
+         
+          String fil="temporal.txt";
+        File archi=new File(fil);
+        if(archi.exists())
+            archi.delete();
+        
+         String f="InfoPartida.txt";
+         File arch=new File(f);
+        if(arch.exists())
+            arch.delete();
+
+
+
+        String x="aum.txt";
+        File ar=new File(x);
+         if(ar.exists())
+             ar.delete();
+
+        String e="Partida.txt";
+        File d=new File(e);
+         if(d.exists())
+            d.delete();
+
+      
+
+        String g="Inventario.txt";
+        File j=new File(g);
+         if(j.exists())
+            j.delete();
+
+
+        String filepath="pokemons_seleccionados.txt";
+        File archivo=new File(filepath);
+         if(archivo.exists())
+            archivo.delete();
+
+ 
+        
+        
            try {
                new MenuInicial().setVisible(true);
            } catch (FileNotFoundException ex) {

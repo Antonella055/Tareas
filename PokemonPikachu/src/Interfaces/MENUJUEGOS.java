@@ -35,7 +35,7 @@ public class MENUJUEGOS extends javax.swing.JFrame {
         initComponents();
         jugador=new Jugador();
         juego = new Juego();
-      
+         new Musica().Detener();
         new Thread(() -> {
           new Musica().Reproducir("src/Sonidos/Jugar.wav", -10.0f);
       }).start();

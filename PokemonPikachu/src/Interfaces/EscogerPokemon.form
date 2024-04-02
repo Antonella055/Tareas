@@ -177,6 +177,7 @@
                     <TitledBorder title="Pokemons"/>
                   </Border>
                 </Property>
+                <Property name="enabled" type="boolean" value="false"/>
               </Properties>
             </Component>
           </SubComponents>

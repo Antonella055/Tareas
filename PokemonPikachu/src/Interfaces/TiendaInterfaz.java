@@ -361,9 +361,7 @@ public class TiendaInterfaz extends javax.swing.JFrame {
     
     
     private void pagarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_pagarActionPerformed
-      
-      
-        
+      new Musica().Detener();
         int credito=Integer.parseInt(watts.getText());
         if(credito < montoAcumulado){
            JOptionPane.showMessageDialog(null, "No tienes los watts necesarios para comprar todo eso! ", "Fondo Insuficiente", JOptionPane.ERROR_MESSAGE);

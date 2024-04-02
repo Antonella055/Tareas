@@ -5,11 +5,14 @@
 package Objetos;
 
 import Interfaces.Auxiliar;
+import Interfaces.MenuPrincipal;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -21,6 +24,13 @@ public class Partida {
         String archivoTemporal = "temporal.txt";
         String archivoPartidaGuardada = "PARTIDAGUARDADA.txt";
 
+        
+        if (!existe(archivoInfoPartida) || !existe(archivoTemporal)) {
+            JOptionPane.showMessageDialog(null, "No has jugado lo suficiente para guardar la partida!", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        new MenuPrincipal().StopReloj();
+        JOptionPane.showMessageDialog(null, "Partida guardada correctamente", "Guardar Partida", JOptionPane.INFORMATION_MESSAGE);
         try (BufferedReader readerInfoPartida = new BufferedReader(new FileReader(archivoInfoPartida));
              BufferedReader readerTemporal = new BufferedReader(new FileReader(archivoTemporal));
              BufferedWriter writer = new BufferedWriter(new FileWriter(archivoPartidaGuardada))) {
@@ -50,6 +60,10 @@ public class Partida {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+    
+    public static boolean existe(String ruta){
+        return new File(ruta).exists();
     }
         public static String LeerPartida(String direccionArchivo) {
         StringBuilder sb = new StringBuilder();

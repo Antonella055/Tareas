@@ -15,6 +15,7 @@ import java.io.IOException;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
+import pokemonpikachu.Musica;
 
 /**
  *
@@ -125,12 +126,12 @@ public class PokemonAJuego extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void outActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_outActionPerformed
-        // TODO add your handling code here:
+        new Musica().Detener();
         setVisible(false);
     }//GEN-LAST:event_outActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        // TODO add your handling code here:
+        new Musica().Detener();
        PokemonJuego=(String)Opciones.getSelectedItem();
        Pokemon pokemon = new Pokemon(PokemonJuego, 0, "Normal");
          this.dispose();

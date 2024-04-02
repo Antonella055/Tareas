@@ -121,7 +121,7 @@ public class MenuPrincipal extends javax.swing.JFrame {
           
            
            if(Aumento()){
-               Watts+=300;
+               Watts+=10;
            }
             if (Aumento2()) {
                 Watts+=10;
@@ -353,27 +353,39 @@ public class MenuPrincipal extends javax.swing.JFrame {
         
         String fil="temporal.txt";
         File archi=new File(fil);
-        archi.delete();
+        if(archi.exists())
+            archi.delete();
+        
+         String f="InfoPartida.txt";
+         File arch=new File(f);
+        if(arch.exists())
+            arch.delete();
 
-        String f="InfoPartida.txt";
-        File arc=new File(f);
-        arc.delete();
 
-         String x="aum.txt";
+
+        String x="aum.txt";
         File ar=new File(x);
-        ar.delete();
+         if(ar.exists())
+             ar.delete();
 
         String e="Partida.txt";
         File d=new File(e);
-        d.delete();
+         if(d.exists())
+            d.delete();
+
+      
 
         String g="Inventario.txt";
         File j=new File(g);
-        j.delete();
+         if(j.exists())
+            j.delete();
+
 
         String filepath="pokemons_seleccionados.txt";
         File archivo=new File(filepath);
-        archivo.delete();
+         if(archivo.exists())
+            archivo.delete();
+
         
            try {
                new MenuInicial().setVisible(true);
@@ -383,13 +395,8 @@ public class MenuPrincipal extends javax.swing.JFrame {
     }//GEN-LAST:event_VolverMenuActionPerformed
 
     private void GuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_GuardarActionPerformed
-        // TODO add your handling code here:
         StopReloj();
-        JOptionPane.showMessageDialog(null, "Partida guardada correctamente", "Guardar Partida", JOptionPane.INFORMATION_MESSAGE);
         new Partida().guardarPartida();
-       
-     
-
     }//GEN-LAST:event_GuardarActionPerformed
 
     

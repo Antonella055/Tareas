@@ -6,22 +6,20 @@ package Interfaces;
 
 import Estructuras.ArbolAVL;
 import Estructuras.List;
-import Objetos.Pokemon;
-import Objetos.Regalo;
-import Objetos.Tienda;
+
 
 import java.awt.Graphics;
 import java.awt.Image;
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
+
 import java.io.FileReader;
-import java.io.FileWriter;
+
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
-import javax.swing.JOptionPane;
+
 import javax.swing.JPanel;
 import pokemonpikachu.Musica;
 
@@ -49,7 +47,9 @@ public class ElegirPok extends javax.swing.JFrame {
         }
     }).start();
          
-         
+           new Thread(() -> {
+            new Musica().Reproducir("src/Sonidos/Creditos.wav", -10.0f);
+        }).start();
          
         rellenarPokemos();
        
@@ -220,7 +220,7 @@ public class ElegirPok extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-      
+      new Musica().Detener();
         try {                                         
             
             String relacion;
@@ -236,6 +236,7 @@ public class ElegirPok extends javax.swing.JFrame {
             }
             
             //ARBOL AVL
+            //prueba.txt es la base de datos de la tienda 
             compararInventarios("Inventario.txt","prueba.txt",pokemon); 
           
       
@@ -259,7 +260,7 @@ public class ElegirPok extends javax.swing.JFrame {
         }
             
             
-            new Musica().Detener();
+       
             this.dispose();
         } catch (IOException ex) {
             Logger.getLogger(ElegirPok.class.getName()).log(Level.SEVERE, null, ex);
@@ -293,7 +294,7 @@ public class ElegirPok extends javax.swing.JFrame {
             }
            arbol.imprimirArbol(arbol.raiz,"");
           arbol.guardarArbolEnArchivo(arbol.raiz, " ", nombrePokemon);
-            
+          arbol.guardarArbolEnArchivo(arbol.raiz, " ", "Respaldo");  
         } catch (IOException e) {
             e.printStackTrace();
         }

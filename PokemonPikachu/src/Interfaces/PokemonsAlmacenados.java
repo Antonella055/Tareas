@@ -238,7 +238,7 @@ public class PokemonsAlmacenados extends javax.swing.JFrame {
         
         String Pokemonselecc = (String) Pokemo.getSelectedItem();
         updatePokemonData(Pokemonselecc);
-//        buscarArchivo(Pokemonselecc);
+        buscarArchivo("Respaldo");
     }//GEN-LAST:event_jButton1ActionPerformed
 
     

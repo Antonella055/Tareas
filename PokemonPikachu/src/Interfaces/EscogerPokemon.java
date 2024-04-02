@@ -99,6 +99,7 @@ public class EscogerPokemon extends javax.swing.JFrame {
         Agregados.setColumns(20);
         Agregados.setRows(5);
         Agregados.setBorder(javax.swing.BorderFactory.createTitledBorder("Pokemons"));
+        Agregados.setEnabled(false);
         jScrollPane1.setViewportView(Agregados);
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
@@ -155,7 +156,12 @@ public class EscogerPokemon extends javax.swing.JFrame {
         // TODO add your handling code here:
         new Musica().Detener();
         String texto=Agregados.getText();
-        
+   
+         System.out.println("a"+texto);
+        if (texto.isEmpty()){
+            JOptionPane.showMessageDialog(null, "No has seleccionado ningun pokemon");
+            
+        }else{
         new MenuPrincipal().setVisible(true);
         String[] lineas = texto.split("\n");
         for (String linea : lineas) {
@@ -187,8 +193,9 @@ public class EscogerPokemon extends javax.swing.JFrame {
         System.err.println("Error al escribir en el archivo: " + e.getMessage());
     }
          this.dispose();
+        }
     }//GEN-LAST:event_SiguienteActionPerformed
-
+    
     
     private void SeleccionarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SeleccionarActionPerformed
         // TODO add your handling code here:

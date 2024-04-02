@@ -11,6 +11,7 @@ import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -453,7 +454,23 @@ public String leerRelacion(String archivo) {
         return file.exists();
     }
      
+    public static void duplicar(String archivoOriginal,String copia) throws FileNotFoundException, IOException{
+        try (InputStream in=new FileInputStream(archivoOriginal); OutputStream out= new FileOutputStream(copia)){
+            
+            byte[] buffer = new byte[1024];
+            int bytesRead;
+
+            while ((bytesRead = in.read(buffer)) != -1) {
+                out.write(buffer, 0, bytesRead);
+            }
+            System.out.println("ArchivoCopiado con exito");
+            
+        }catch (IOException e) {
+            System.out.println("Error al duplicar el archivo: " + e.getMessage());
+        }
     
+
+    }
     
     
 }

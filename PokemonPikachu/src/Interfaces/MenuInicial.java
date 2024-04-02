@@ -166,11 +166,12 @@ public class MenuInicial extends javax.swing.JFrame {
     }//GEN-LAST:event_InstruccionesActionPerformed
 
     private void CargarJuegoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CargarJuegoActionPerformed
-       File partida= new File("PARTIDAGUARDADA.txt");
+       new Musica().Detener();
+        File partida= new File("PARTIDAGUARDADA.txt");
        if(!partida.exists()){
            JOptionPane.showMessageDialog(null, "No se ha guardado una partida aun");
        }
-       new Musica().Detener();
+
        new PartidaCargada().setVisible(true);
        this.dispose();
     }//GEN-LAST:event_CargarJuegoActionPerformed
