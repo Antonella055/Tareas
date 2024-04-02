@@ -1,0 +1,10 @@
+1 Pikachu
+2 Castform
+3 Kyogre 
+4 Burmy
+5 Cherrim
+6 Arceus
+7 Deoxys
+8 Rotom
+9 Dialga
+10 Shaymin

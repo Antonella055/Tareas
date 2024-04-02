@@ -4,27 +4,95 @@
  */
 package Interfaces;
 
+import Estructuras.ArbolAVL;
+import Estructuras.List;
+import Objetos.Pokemon;
+import Objetos.Regalo;
+import Objetos.Tienda;
+
 import java.awt.Graphics;
 import java.awt.Image;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import pokemonpikachu.Musica;
 
 /**
  *
  * @author Antonella
  */
 public class ElegirPok extends javax.swing.JFrame {
-
+     
     /**
      * Creates new form ElegirPok
      */
     public ElegirPok() {
         initComponents();
-        String[] valores = new EscogerPokemon().obtenerPokemons();
-        for (String valor: valores) {
-            Opciones.addItem(valor);
+        
+        
+        
+            new Thread(() -> {
+        try {
+            // Mini retraso para obtener los datos de los watts correctamente
+            Thread.sleep(500);
+           rellenarRegalos();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
+    }).start();
+         
+         
+         
+        rellenarPokemos();
        
+    }
+    
+    
+    private void rellenarRegalos(){
+         List<String> regalosComprados=new Auxiliar().cargarInventario();
+         DefaultComboBoxModel<String> model= (DefaultComboBoxModel<String>) Regalos.getModel();
+        model.removeAllElements();
+        for (int i = 0; i < regalosComprados.getSize(); i++) {
+            String pokemon = regalosComprados.get(i);
+            model.addElement(pokemon);
+        }
+    } 
+    
+    private void rellenarPokemos(){
+         String filepath="pokemons_seleccionados.txt";
+        
+        EscogerPokemon pokemons= new EscogerPokemon();
+        
+       
+        List<String> pokemonesSeleccionados= new List<>();
+        try (BufferedReader br= new BufferedReader(new FileReader(filepath))){
+            String linea;
+            while((linea=br.readLine())!= null){
+                pokemonesSeleccionados.insertarFinal(linea);
+            }
+        
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+         System.out.println("Pokemons:");
+        for (int i = 0; i < pokemonesSeleccionados.getSize(); i++) {
+            System.out.println(pokemonesSeleccionados.get(i));
+        }
+        
+        DefaultComboBoxModel<String> model= (DefaultComboBoxModel<String>) Opciones.getModel();
+        model.removeAllElements();
+        for (int i = 0; i < pokemonesSeleccionados.getSize(); i++) {
+            String pokemon = pokemonesSeleccionados.get(i);
+            model.addElement(pokemon);
+        }
     }
     
     
@@ -39,21 +107,22 @@ public class ElegirPok extends javax.swing.JFrame {
 
         jPanel1 = new Fondo();
         jLabel1 = new javax.swing.JLabel();
-        out = new javax.swing.JButton();
         Opciones = new javax.swing.JComboBox<>();
         jButton1 = new javax.swing.JButton();
+        Regalos = new javax.swing.JComboBox<>();
+        jLabel2 = new javax.swing.JLabel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        Inventario = new javax.swing.JTextArea();
+        add = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         jLabel1.setFont(new java.awt.Font("Swis721 BlkCn BT", 0, 24)); // NOI18N
-        jLabel1.setText("Escoge el pokemon que se llevara este regalo! ");
+        jLabel1.setText("Escoge el pokemon que se llevara un regalo! ");
 
-        out.setBackground(new java.awt.Color(153, 0, 0));
-        out.setText("<");
-        out.setBorder(null);
-        out.addActionListener(new java.awt.event.ActionListener() {
+        Opciones.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                outActionPerformed(evt);
+                OpcionesActionPerformed(evt);
             }
         });
 
@@ -66,45 +135,81 @@ public class ElegirPok extends javax.swing.JFrame {
             }
         });
 
+        Regalos.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                RegalosActionPerformed(evt);
+            }
+        });
+
+        jLabel2.setFont(new java.awt.Font("Swis721 Blk BT", 0, 12)); // NOI18N
+        jLabel2.setText("Regalos");
+
+        Inventario.setEditable(false);
+        Inventario.setColumns(20);
+        Inventario.setRows(5);
+        Inventario.setBorder(javax.swing.BorderFactory.createTitledBorder("Inventario Pokemon"));
+        jScrollPane1.setViewportView(Inventario);
+
+        add.setBackground(new java.awt.Color(51, 204, 255));
+        add.setText("Agregar");
+        add.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                addActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGap(54, 54, 54)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(Opciones, javax.swing.GroupLayout.PREFERRED_SIZE, 450, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(26, 26, 26)
-                        .addComponent(out, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jLabel2)
                         .addGap(18, 18, 18)
-                        .addComponent(jLabel1))
+                        .addComponent(Regalos, javax.swing.GroupLayout.PREFERRED_SIZE, 256, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(add))
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(120, 120, 120)
-                        .addComponent(Opciones, javax.swing.GroupLayout.PREFERRED_SIZE, 397, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(100, Short.MAX_VALUE))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addGap(0, 0, Short.MAX_VALUE)
-                .addComponent(jButton1)
-                .addGap(27, 27, 27))
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 408, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(29, 29, 29)
+                        .addComponent(jButton1)))
+                .addContainerGap(88, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(20, 20, 20)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(out, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel1))
-                .addGap(82, 82, 82)
+                .addComponent(jLabel1)
+                .addGap(33, 33, 33)
                 .addComponent(Opciones, javax.swing.GroupLayout.PREFERRED_SIZE, 52, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 70, Short.MAX_VALUE)
-                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18))
+                .addGap(30, 30, 30)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(Regalos, javax.swing.GroupLayout.PREFERRED_SIZE, 47, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel2)
+                    .addComponent(add, javax.swing.GroupLayout.PREFERRED_SIZE, 47, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addContainerGap(60, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(31, 31, 31))))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -114,16 +219,110 @@ public class ElegirPok extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void outActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_outActionPerformed
-        // TODO add your handling code here:
-        setVisible(false);
-    }//GEN-LAST:event_outActionPerformed
-
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        // TODO add your handling code here:
-        setVisible(false);
+      
+        try {                                         
+            
+            String relacion;
+            relacion = new Auxiliar(). leerRelacion();
+            
+            String pokemon= Opciones.getSelectedItem().toString();
+            String texto = Inventario.getText();
+            List<String> regalos= new List<>();
+            
+            String[] lineas = texto.split("\n");
+            for (String linea : lineas) {
+                regalos.insertarFinal(linea);
+            }
+            
+            //ARBOL AVL
+            compararInventarios("Inventario.txt","prueba.txt",pokemon); 
+          
+      
+            
+            try {
+                new Auxiliar().escribirPokemon(pokemon);
+            } catch (IOException ex) {
+                Logger.getLogger(ElegirPok.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            
+            try {
+                new Auxiliar().escribirInventario(regalos);
+            } catch (IOException ex) {
+                Logger.getLogger(ElegirPok.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            
+             try {
+            new Auxiliar(). transferirDatos();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+            
+            
+            new Musica().Detener();
+            this.dispose();
+        } catch (IOException ex) {
+            Logger.getLogger(ElegirPok.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }//GEN-LAST:event_jButton1ActionPerformed
 
+     public static void compararInventarios(String archivoUsuario, String archivoTienda,String nombrePokemon) {
+           ArbolAVL arbol= new ArbolAVL();
+        try (BufferedReader brUsuario = new BufferedReader(new FileReader(archivoUsuario));
+             BufferedReader brTienda = new BufferedReader(new FileReader(archivoTienda))) {
+   
+            String lineaUsuario;
+            while ((lineaUsuario = brUsuario.readLine()) != null) {
+                String[] partesUsuario = lineaUsuario.split(",");
+                String nombreUsuario = partesUsuario[0].trim();
+               
+
+                String lineaTienda;
+                while ((lineaTienda = brTienda.readLine()) != null) {
+                    String[] partesTienda = lineaTienda.split(",");
+                    String nombreTienda = partesTienda[0].trim();
+                    int precioTienda = Integer.parseInt(partesTienda[1].trim());
+
+                    if (nombreUsuario.equals(nombreTienda)) {
+                        System.out.println("El precio de " + nombreUsuario + " en la tienda es: " + precioTienda);
+                          arbol.insertar(nombreUsuario, precioTienda);
+                        break;  // Se encontró el producto en la tienda, se puede pasar al siguiente producto del usuario
+                    }
+                }
+            //Crear Arbol
+            }
+           arbol.imprimirArbol(arbol.raiz,"");
+          arbol.guardarArbolEnArchivo(arbol.raiz, " ", nombrePokemon);
+            
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    
+    
+    
+    private void OpcionesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_OpcionesActionPerformed
+      
+    }//GEN-LAST:event_OpcionesActionPerformed
+
+    private void addActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addActionPerformed
+      
+            String regalo=Regalos.getSelectedItem().toString();
+            String valor= Inventario.getText();
+            Inventario.append(regalo+"\n");
+ 
+            
+               
+    }//GEN-LAST:event_addActionPerformed
+
+    private void RegalosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_RegalosActionPerformed
+
+    }//GEN-LAST:event_RegalosActionPerformed
+
+  
+    
     /**
      * @param args the command line arguments
      */
@@ -160,11 +359,15 @@ public class ElegirPok extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JTextArea Inventario;
     private javax.swing.JComboBox<String> Opciones;
+    private javax.swing.JComboBox<String> Regalos;
+    private javax.swing.JButton add;
     private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
     private javax.swing.JPanel jPanel1;
-    private javax.swing.JButton out;
+    private javax.swing.JScrollPane jScrollPane1;
     // End of variables declaration//GEN-END:variables
 class Fondo extends JPanel{
         private Image imagen;

@@ -6,8 +6,18 @@ package Interfaces;
 
 import java.awt.Graphics;
 import java.awt.Image;
+import java.io.File;
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
+
+
+import java.io.FileNotFoundException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JOptionPane;
+import pokemonpikachu.Musica;
+
+
 
 /**
  *
@@ -17,10 +27,18 @@ public class MenuInicial extends javax.swing.JFrame {
 
     /**
      * Creates new form Menu
+     * @throws java.io.FileNotFoundException
      */
-    public MenuInicial() {
+    public MenuInicial() throws FileNotFoundException {
         initComponents();
+          new Thread(() -> {
+            new Musica().Reproducir("src/Sonidos/Menu.wav", -10.0f);
+        }).start();
+    
+        
     }
+    
+    
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -41,6 +59,7 @@ public class MenuInicial extends javax.swing.JFrame {
 
         NuevoJuego.setBackground(new java.awt.Color(51, 51, 51));
         NuevoJuego.setFont(new java.awt.Font("Copperplate Gothic Bold", 0, 12)); // NOI18N
+        NuevoJuego.setForeground(new java.awt.Color(204, 204, 204));
         NuevoJuego.setText("Nueva Partida");
         NuevoJuego.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(51, 51, 51)));
         NuevoJuego.addActionListener(new java.awt.event.ActionListener() {
@@ -51,18 +70,36 @@ public class MenuInicial extends javax.swing.JFrame {
 
         CargarJuego.setBackground(new java.awt.Color(51, 51, 51));
         CargarJuego.setFont(new java.awt.Font("Copperplate Gothic Bold", 0, 12)); // NOI18N
+        CargarJuego.setForeground(new java.awt.Color(204, 204, 204));
         CargarJuego.setText("Cargar Partida");
         CargarJuego.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(51, 51, 51)));
+        CargarJuego.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                CargarJuegoActionPerformed(evt);
+            }
+        });
 
         Instrucciones.setBackground(new java.awt.Color(51, 51, 51));
         Instrucciones.setFont(new java.awt.Font("Copperplate Gothic Bold", 0, 12)); // NOI18N
+        Instrucciones.setForeground(new java.awt.Color(204, 204, 204));
         Instrucciones.setText("Instrucciones");
         Instrucciones.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(51, 51, 51)));
+        Instrucciones.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                InstruccionesActionPerformed(evt);
+            }
+        });
 
         Creditos.setBackground(new java.awt.Color(51, 51, 51));
         Creditos.setFont(new java.awt.Font("Copperplate Gothic Bold", 0, 12)); // NOI18N
+        Creditos.setForeground(new java.awt.Color(204, 204, 204));
         Creditos.setText("Créditos");
         Creditos.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(51, 51, 51)));
+        Creditos.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                CreditosActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -110,8 +147,33 @@ public class MenuInicial extends javax.swing.JFrame {
 
     private void NuevoJuegoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_NuevoJuegoActionPerformed
         // TODO add your handling code here:
+        new Musica().Detener();
         new EscogerPokemon().setVisible(true);
+        this.dispose();
     }//GEN-LAST:event_NuevoJuegoActionPerformed
+
+    private void CreditosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CreditosActionPerformed
+        // TODO add your handling code here:
+        new Musica().Detener();
+        new Creditos().setVisible(true);
+        this.dispose();
+    }//GEN-LAST:event_CreditosActionPerformed
+
+    private void InstruccionesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_InstruccionesActionPerformed
+        new Musica().Detener();
+        new Instrucciones().setVisible(true);
+        this.dispose();
+    }//GEN-LAST:event_InstruccionesActionPerformed
+
+    private void CargarJuegoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CargarJuegoActionPerformed
+       File partida= new File("PARTIDAGUARDADA.txt");
+       if(!partida.exists()){
+           JOptionPane.showMessageDialog(null, "No se ha guardado una partida aun");
+       }
+       new Musica().Detener();
+       new PartidaCargada().setVisible(true);
+       this.dispose();
+    }//GEN-LAST:event_CargarJuegoActionPerformed
 
     
     /**
@@ -141,11 +203,16 @@ public class MenuInicial extends javax.swing.JFrame {
         }
         //</editor-fold>
         //</editor-fold>
-
+        
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new MenuInicial().setVisible(true);
+                try {
+                    new MenuInicial().setVisible(true);
+                     
+                } catch (FileNotFoundException ex) {
+                    Logger.getLogger(MenuInicial.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
         });
     }

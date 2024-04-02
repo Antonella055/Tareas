@@ -1,0 +1,9 @@
+Baya Aranja, 100 , +100 Relación
+Baya Caquic, 200 , +250 Relación
+Poke ball, 300 ,+400 Relación
+Baya Zreza, 400 ,+550 Relación
+Baya Zanama, 500 , +700 Relación
+Baya Ziuela, 600 , +850 Relación
+Baya Zidra, 700 , +1000 Relación
+Baya Enigma, 800 , +1150 Relación
+Caramelo raro, 900 , +1300 Relación

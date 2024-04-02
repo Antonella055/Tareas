@@ -4,13 +4,35 @@
  */
 package Interfaces;
 
+
+
+import Objetos.Partida;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+
+
+import java.io.BufferedWriter;
+import java.io.File;
+
+import java.io.FileNotFoundException;
+
+
+import java.io.FileWriter;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.ImageIcon;
+import javax.swing.JOptionPane;
+
 import javax.swing.JPanel;
 import javax.swing.Timer;
+import pokemonpikachu.Musica;
 
 /**
  *
@@ -24,19 +46,52 @@ public class MenuPrincipal extends javax.swing.JFrame {
         private int horas=0;
         public String tiempoactual;
         public String time;
+        private int Watts = 0;
+         private static boolean AumentoWatts = false;
+         private static boolean Aumento=false;
+          private static boolean AumentoWatt=false;
+         private int totalSegundos = 0;
     /**
      * Creates new form MenuPrincipal
      */
     public MenuPrincipal() {
         initComponents();
+       
         tiempo= new Timer(10,acciones);
         StartReloj();
+          new Thread(() -> {
+            new Musica().Reproducir("src/Sonidos/Menu.wav", -10.0f);
+        }).start();
+        
+      
     }
+   
+    public void actualizarWatts(int segundos) {
+    
+        Watts = totalSegundos;
+        numWatts.setText(String.valueOf(Watts));
+        
+        Auxiliar fileManager = new Auxiliar();
+        if (fileManager.fileExists("aum.txt")) {
+            String nuevobalance = fileManager.readFromTxt("aum.txt");
+           if (nuevobalance != null) {
+                nuevobalance = nuevobalance.trim(); // Eliminar espacios en blanco al inicio y al final
+                if (!nuevobalance.isEmpty()) {
+                    Watts -= Integer.valueOf(nuevobalance);
+                }
+    } numWatts.setText(String.valueOf(Watts));
+        }
+        
+    }
+         
+
     
     /**
-     * Cronometro para el tiempo jugado
+     * Reloj del tiempo jugado
      */
     public  ActionListener acciones= new ActionListener(){
+         
+         
         @Override
         public void actionPerformed(ActionEvent e){
            miliseg ++;
@@ -44,10 +99,13 @@ public class MenuPrincipal extends javax.swing.JFrame {
            if (miliseg ==100){
                segundos++;
                miliseg=0;
-               
+              totalSegundos+=1;
            }if(segundos==60){
+                
                minutos++;
                segundos=0;
+              
+               
                
            }if(minutos==60){
                horas++;
@@ -58,9 +116,34 @@ public class MenuPrincipal extends javax.swing.JFrame {
            }
            
            time = actualizarEtiqueta();
+        
+           actualizarWatts(totalSegundos);
+          
+           
+           if(Aumento()){
+               Watts+=300;
+           }
+            if (Aumento2()) {
+                Watts+=10;
+            }
+           numWatts.setText(String.valueOf(Watts));
+           
+           
+           
+              if(ResultadoApuesta()){
+            int watts= new Auxiliar().obtenerWatts();
+            numWatts.setText(String.valueOf( watts));
+        }
+            
+              
+            try {
+                new Auxiliar().procesaWatts(Watts);
+            } catch (IOException ex) {
+                Logger.getLogger(MenuPrincipal.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
                 };
-   
+    
        public final void StartReloj(){
         tiempo.start();
     }
@@ -78,7 +161,27 @@ public class MenuPrincipal extends javax.swing.JFrame {
        etiquetatiempo.setText(tiempoactual);
        return tiempoactual;
    }
-    
+   
+   public boolean Aumento(){
+           return AumentoWatts;
+   }
+   public void askAumento(boolean valor) {
+           AumentoWatts = valor;
+       }
+   public boolean Aumento2(){
+           return AumentoWatt;
+   }
+   public void askAumento2(boolean valor) {
+           AumentoWatt = valor;
+       }
+   
+   public final boolean ResultadoApuesta(){
+           return Aumento;
+   }
+   public void askResultado(boolean valor) {
+           Aumento = valor;
+       }
+
     
     /**
      * This method is called from within the constructor to initialize the form.
@@ -93,10 +196,10 @@ public class MenuPrincipal extends javax.swing.JFrame {
         jLabel1 = new javax.swing.JLabel();
         etiquetatiempo = new javax.swing.JLabel();
         VolverMenu = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
+        Tienda = new javax.swing.JButton();
         jLabel3 = new javax.swing.JLabel();
-        jLabel4 = new javax.swing.JLabel();
-        jButton3 = new javax.swing.JButton();
+        numWatts = new javax.swing.JLabel();
+        Pokemon = new javax.swing.JButton();
         jButton4 = new javax.swing.JButton();
         Guardar = new javax.swing.JButton();
 
@@ -112,8 +215,9 @@ public class MenuPrincipal extends javax.swing.JFrame {
         etiquetatiempo.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
 
         VolverMenu.setBackground(new java.awt.Color(42, 52, 27));
-        VolverMenu.setFont(new java.awt.Font("Swis721 Blk BT", 1, 12)); // NOI18N
-        VolverMenu.setText("Menu");
+        VolverMenu.setFont(new java.awt.Font("Swis721 Blk BT", 0, 12)); // NOI18N
+        VolverMenu.setForeground(new java.awt.Color(255, 255, 255));
+        VolverMenu.setText("Volver");
         VolverMenu.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         VolverMenu.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -121,13 +225,13 @@ public class MenuPrincipal extends javax.swing.JFrame {
             }
         });
 
-        jButton2.setBackground(new java.awt.Color(210, 185, 86));
-        jButton2.setForeground(new java.awt.Color(102, 102, 102));
-        jButton2.setText("Tienda");
-        jButton2.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
-        jButton2.addActionListener(new java.awt.event.ActionListener() {
+        Tienda.setBackground(new java.awt.Color(210, 185, 86));
+        Tienda.setForeground(new java.awt.Color(102, 102, 102));
+        Tienda.setText("Tienda");
+        Tienda.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        Tienda.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton2ActionPerformed(evt);
+                TiendaActionPerformed(evt);
             }
         });
 
@@ -135,20 +239,30 @@ public class MenuPrincipal extends javax.swing.JFrame {
         jLabel3.setForeground(new java.awt.Color(204, 204, 255));
         jLabel3.setText("Watts");
 
-        jLabel4.setFont(new java.awt.Font("Simplex_IV25", 1, 18)); // NOI18N
-        jLabel4.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel4.setText("0");
-        jLabel4.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
+        numWatts.setFont(new java.awt.Font("Simplex_IV25", 1, 18)); // NOI18N
+        numWatts.setForeground(new java.awt.Color(255, 255, 255));
+        numWatts.setText("0");
+        numWatts.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
 
-        jButton3.setBackground(new java.awt.Color(38, 123, 207));
-        jButton3.setForeground(new java.awt.Color(0, 0, 0));
-        jButton3.setText("Pokemon");
-        jButton3.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        Pokemon.setBackground(new java.awt.Color(38, 123, 207));
+        Pokemon.setForeground(new java.awt.Color(0, 0, 0));
+        Pokemon.setText("Pokemon");
+        Pokemon.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        Pokemon.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                PokemonActionPerformed(evt);
+            }
+        });
 
         jButton4.setBackground(new java.awt.Color(204, 204, 204));
         jButton4.setFont(new java.awt.Font("Showcard Gothic", 0, 14)); // NOI18N
         jButton4.setForeground(new java.awt.Color(0, 153, 51));
         jButton4.setText("JUGAR");
+        jButton4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton4ActionPerformed(evt);
+            }
+        });
 
         Guardar.setBackground(new java.awt.Color(0, 153, 153));
         Guardar.setText("Guardar Partida");
@@ -168,10 +282,9 @@ public class MenuPrincipal extends javax.swing.JFrame {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(VolverMenu, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(23, 23, 23)
                         .addComponent(jLabel3)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jLabel4)))
+                        .addGap(29, 29, 29)
+                        .addComponent(numWatts)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
@@ -179,17 +292,17 @@ public class MenuPrincipal extends javax.swing.JFrame {
                         .addGap(29, 29, 29))
                     .addComponent(etiquetatiempo, javax.swing.GroupLayout.Alignment.TRAILING))
                 .addGap(30, 30, 30))
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(344, 344, 344)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jButton4, javax.swing.GroupLayout.DEFAULT_SIZE, 218, Short.MAX_VALUE)
-                    .addComponent(jButton3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jButton2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addGap(0, 351, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(Guardar, javax.swing.GroupLayout.PREFERRED_SIZE, 139, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(22, 22, 22))
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGap(331, 331, 331)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jButton4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(Pokemon, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(Tienda, javax.swing.GroupLayout.PREFERRED_SIZE, 218, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(364, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -201,20 +314,20 @@ public class MenuPrincipal extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel3)
-                            .addComponent(jLabel4))
-                        .addGap(59, 59, 59)
-                        .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 59, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(numWatts))
                         .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
                         .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 18, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(etiquetatiempo)
-                        .addGap(313, 313, 313)
+                        .addGap(69, 69, 69)
+                        .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 59, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(Pokemon, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(Tienda, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(69, 69, 69)
                         .addComponent(Guardar, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(167, 167, 167))))
         );
@@ -227,27 +340,119 @@ public class MenuPrincipal extends javax.swing.JFrame {
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 421, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 421, Short.MAX_VALUE)
         );
 
         pack();
+        setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
     private void VolverMenuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_VolverMenuActionPerformed
-        // TODO add your handling code here:
+        new Musica().Detener();
         setVisible(false);
-        new MenuInicial().setVisible(true);
+        
+        String fil="temporal.txt";
+        File archi=new File(fil);
+        archi.delete();
+
+        String f="InfoPartida.txt";
+        File arc=new File(f);
+        arc.delete();
+
+         String x="aum.txt";
+        File ar=new File(x);
+        ar.delete();
+
+        String e="Partida.txt";
+        File d=new File(e);
+        d.delete();
+
+        String g="Inventario.txt";
+        File j=new File(g);
+        j.delete();
+
+        String filepath="pokemons_seleccionados.txt";
+        File archivo=new File(filepath);
+        archivo.delete();
+        
+           try {
+               new MenuInicial().setVisible(true);
+           } catch (FileNotFoundException ex) {
+               Logger.getLogger(MenuPrincipal.class.getName()).log(Level.SEVERE, null, ex);
+           }
     }//GEN-LAST:event_VolverMenuActionPerformed
 
     private void GuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_GuardarActionPerformed
         // TODO add your handling code here:
         StopReloj();
+        JOptionPane.showMessageDialog(null, "Partida guardada correctamente", "Guardar Partida", JOptionPane.INFORMATION_MESSAGE);
+        new Partida().guardarPartida();
+       
+     
+
     }//GEN-LAST:event_GuardarActionPerformed
 
-    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+    
+    
+    
+    
+    
+    
+    private void GuardarPartida() {
+         String archivoOrigenPartida = "Partida.txt"; // Reemplaza con la ruta del archivo de origen de la partida
+        String archivoOrigenWatts = "watts.txt"; // Reemplaza con la ruta del archivo de origen de los watts
+        String archivoDestino = "PartidaCompleta.txt"; // Reemplaza con la ruta del archivo de destino de la partida completa
+
+        try {
+            Path origenPartida = Paths.get(archivoOrigenPartida);
+            Path origenWatts = Paths.get(archivoOrigenWatts);
+            Path destino = Paths.get(archivoDestino);
+
+            Files.write(destino, Files.readAllLines(origenPartida), StandardOpenOption.CREATE, StandardOpenOption.APPEND);
+            Files.write(destino, Files.readAllLines(origenWatts), StandardOpenOption.APPEND);
+
+            System.out.println("La partida completa se ha guardado exitosamente.");
+        } catch (IOException e) {
+            System.out.println("Se produjo un error al guardar la partida completa: " + e.getMessage());
+        }
+    }
+    
+    
+    
+    
+    private void TiendaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_TiendaActionPerformed
         // TODO add your handling code here:
-        new Tienda().setVisible(true);
-    }//GEN-LAST:event_jButton2ActionPerformed
+        new Musica().Detener();
+            askAumento(true);
+            numWatts.setText(String.valueOf(Watts));
+        // Crear un nuevo hilo para abrir la ventana de la tienda
+        Thread thread = new Thread(new Runnable() {
+        public void run() {
+            // Abrir la ventana de la tienda
+            new TiendaInterfaz().setVisible(true);
+            
+            // Imprimir los Watts después de abrir la tienda
+            new Auxiliar().debeImprimirWatts(true);
+        }
+    });
+    thread.start();
+    }//GEN-LAST:event_TiendaActionPerformed
+    
+    private void PokemonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_PokemonActionPerformed
+       
+        askAumento2(true);
+        new Musica().Detener();
+// TODO add your handling code here:
+        numWatts.setText(String.valueOf(Watts));
+        new PokemonsInfo().setVisible(true);
+         
+    }//GEN-LAST:event_PokemonActionPerformed
+
+    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
+        // TODO add your handling code here:
+        new Musica().Detener();
+        new MENUJUEGOS().setVisible(true);
+    }//GEN-LAST:event_jButton4ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -286,15 +491,15 @@ public class MenuPrincipal extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton Guardar;
+    private javax.swing.JButton Pokemon;
+    private javax.swing.JButton Tienda;
     private javax.swing.JButton VolverMenu;
     private javax.swing.JLabel etiquetatiempo;
-    private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton4;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel jLabel4;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JLabel numWatts;
     // End of variables declaration//GEN-END:variables
 class Fondo extends JPanel{
         private Image imagen;
@@ -307,4 +512,14 @@ class Fondo extends JPanel{
                     
                     super.paint(g);
         }
-    }}
+    }
+    private void escribirWatts() {
+        String nombreArchivo = "watts.txt";
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(nombreArchivo, true))) {
+            writer.write(String.valueOf(Watts));
+            writer.newLine();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }    
+}

@@ -5,6 +5,7 @@
 package Objetos;
 
 import Estructuras.List;
+import Interfaces.Auxiliar;
 
 /**
  *
@@ -26,7 +27,6 @@ public class Tienda {
         regalosDisponibles.insertarFinal(new Regalo("Baya Zidra", 700));
         regalosDisponibles.insertarFinal(new Regalo("Baya Enigma", 800));
         regalosDisponibles.insertarFinal(new Regalo("Caramelo raro", 900));
-      
     }
 
     public List<Regalo> getRegalosDisponibles() {
@@ -48,6 +48,8 @@ public class Tienda {
             return null;
         }
     }
+    
+        
 }
     
 

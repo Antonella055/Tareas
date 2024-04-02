@@ -4,166 +4,156 @@
  */
 package Estructuras;
 
+import Objetos.Regalo;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+
 /**
  *
  * @author Antonella
  */
+
+
+
 public class ArbolAVL {
-    private NodoArbolAVL raiz;
+    public NodoAVL raiz;
 
-    public ArbolAVL() {
-        raiz=null;
-    }
-
-    public NodoArbolAVL getRaiz() {
-        return raiz;
-    }
-    
-    public NodoArbolAVL buscar(int d,NodoArbolAVL r){
-        if (raiz==null) {
-            return null;
-        }else if(r.dato==d){
-            return r;
-        }else if(r.dato<d){
-            return buscar(d,r.hijoDerecho);
-        }else{
-            return buscar (d,r.hijoIzquierdo);
+    public int obtenerAltura(NodoAVL NodoAVL) {
+        if (NodoAVL == null) {
+            return 0;
         }
+        return NodoAVL.altura;
     }
-    
-    /**
-     * Obtener el factor de equilibrio 
-     * @param x
-     * @return 
-     */
-    public int obtenerFE(NodoArbolAVL x){
-        if (x==null) {
-            return -1;
-        }else
-            return x.fe;
+
+    public int obtenerBalance(NodoAVL NodoAVL) {
+        if (NodoAVL == null) {
+            return 0;
+        }
+        return obtenerAltura(NodoAVL.izquierdo) - obtenerAltura(NodoAVL.derecho);
     }
-    
-    /**
-     * Rotacion simple izquierda
-     * @param c
-     * @return 
-     */
-    public NodoArbolAVL rotacionIzquierda(NodoArbolAVL c){
-         NodoArbolAVL aux =c.hijoIzquierdo;
-        c.hijoIzquierdo= aux.hijoDerecho;
-        aux.hijoDerecho=c;
-        c.fe=Math.max(obtenerFE(c.hijoIzquierdo),obtenerFE(c.hijoDerecho))+1;
-        return aux;
+
+    public NodoAVL rotarDerecha(NodoAVL y) {
+        NodoAVL x = y.izquierdo;
+        NodoAVL T2 = x.derecho;
+
+        x.derecho = y;
+        y.izquierdo = T2;
+
+        y.altura = Math.max(obtenerAltura(y.izquierdo), obtenerAltura(y.derecho)) + 1;
+        x.altura = Math.max(obtenerAltura(x.izquierdo), obtenerAltura(x.derecho)) + 1;
+
+        return x;
     }
-    
-    /**
-     * Rotacion simple derecha
-     * @param c
-     * @return 
-     */
-    public NodoArbolAVL rotacionDerecha (NodoArbolAVL c){
-        NodoArbolAVL aux=c.hijoDerecho;
-        c.hijoDerecho=aux.hijoDerecho;
-        aux.hijoDerecho=c;
-        c.fe=Math.max(obtenerFE(c.hijoIzquierdo),obtenerFE(c.hijoDerecho))+1;
-        return aux;  
+
+    public NodoAVL rotarIzquierda(NodoAVL x) {
+        NodoAVL y = x.derecho;
+        NodoAVL T2 = y.izquierdo;
+
+        y.izquierdo = x;
+        x.derecho = T2;
+
+        x.altura = Math.max(obtenerAltura(x.izquierdo), obtenerAltura(x.derecho)) + 1;
+        y.altura = Math.max(obtenerAltura(y.izquierdo), obtenerAltura(y.derecho)) + 1;
+
+        return y;
     }
-    
-    public NodoArbolAVL rotacionDobleIzquierda(NodoArbolAVL c){
-        NodoArbolAVL temp;
-        c.hijoIzquierdo = rotacionDerecha(c.hijoIzquierdo);
-        temp= rotacionIzquierda(c);
-        return temp;
-    }
-    
-     public NodoArbolAVL rotacionDobleDerecha(NodoArbolAVL c){
-        NodoArbolAVL temp;
-        c.hijoDerecho=rotacionIzquierda(c.hijoDerecho);
-        temp=rotacionDerecha(c);
-        return temp;
-    }
-     
-     public NodoArbolAVL insertar(NodoArbolAVL nuevo,NodoArbolAVL subAr){
-         NodoArbolAVL nuevoPadre= subAr;
-         
-         if (nuevo.dato < subAr.dato) {
-             if(subAr.hijoIzquierdo==null){
-                 subAr.hijoIzquierdo=nuevo;
-             }else{
-                 subAr.hijoIzquierdo= insertar(nuevo,subAr.hijoIzquierdo);
-                 
-                 if((obtenerFE(subAr.hijoIzquierdo)- obtenerFE(subAr.hijoDerecho)) ==2){
-                     if(nuevo.dato < subAr.hijoIzquierdo.dato){
-                         nuevoPadre= rotacionIzquierda(subAr);
-                     }else{
-                         nuevoPadre= rotacionDobleIzquierda(subAr);
-                     }
-                 }
-             }
-         }else if (nuevo.dato > subAr.dato){
-             if(subAr.hijoDerecho==null){
-                 subAr.hijoDerecho=nuevo;
-             }else {
-            subAr.hijoDerecho = insertar(nuevo, subAr.hijoDerecho);
-            if ((obtenerFE(subAr.hijoDerecho) - obtenerFE(subAr.hijoIzquierdo)) == 2) {
-                if (nuevo.dato > subAr.hijoDerecho.dato) {
-                    nuevoPadre = rotacionDerecha(subAr);
-                } else {
-                    nuevoPadre = rotacionDobleDerecha(subAr);
-                }
-                    }
-                }
-         } else {
-                System.out.println("Nodo Duplicado");
-            }
-    
-        // Actualizando la altura
-        if ((subAr.hijoIzquierdo == null) && (subAr.hijoDerecho != null)) {
-            subAr.fe = subAr.hijoDerecho.fe + 1;
-        } else if ((subAr.hijoDerecho == null) && (subAr.hijoIzquierdo != null)) {
-            subAr.fe = subAr.hijoIzquierdo.fe + 1;
+
+    public NodoAVL insertar(NodoAVL NodoAVL, String nombreProducto, int precio) {
+        if (NodoAVL == null) {
+            return new NodoAVL(nombreProducto, precio);
+        }
+
+        if (nombreProducto.compareTo(NodoAVL.nombreProducto) < 0) {
+            NodoAVL.izquierdo = insertar(NodoAVL.izquierdo, nombreProducto, precio);
+        } else if (nombreProducto.compareTo(NodoAVL.nombreProducto) > 0) {
+            NodoAVL.derecho = insertar(NodoAVL.derecho, nombreProducto, precio);
         } else {
-            subAr.fe = Math.max(obtenerFE(subAr.hijoIzquierdo), obtenerFE(subAr.hijoDerecho)) + 1;
+            // El nombre del producto ya existe en el árbol
+            return NodoAVL;
         }
 
-        return nuevoPadre;
-    }
-     
-     public void agregar(int d){
-         NodoArbolAVL nuevo= new NodoArbolAVL(d);
-         if(raiz==null){
-             raiz=nuevo;
-         }else{
-             raiz= insertar(nuevo,raiz );
-         }
-     }
-     
-     //Recorridos
-     
-     //Inorden
-    public void inOrden(NodoArbolAVL r){
-        if(r!=null){
-            inOrden(r.hijoIzquierdo);
-            System.out.print(r.dato + ".");
-            inOrden(r.hijoDerecho);
-    }
-    }
-        
-    public void preOrden(NodoArbolAVL r){
-        if(r!=null){
-        System.out.print(r.dato + ",");
-        preOrden(r.hijoIzquierdo);
-        preOrden(r.hijoDerecho);
+        NodoAVL.altura = 1 + Math.max(obtenerAltura(NodoAVL.izquierdo), obtenerAltura(NodoAVL.derecho));
+
+        int balance = obtenerBalance(NodoAVL);
+
+        // Caso de rotación izquierda-izquierda
+        if (balance > 1 && nombreProducto.compareTo(NodoAVL.izquierdo.nombreProducto) < 0) {
+            return rotarDerecha(NodoAVL);
         }
+
+        // Caso de rotación derecha-derecha
+        if (balance < -1 && nombreProducto.compareTo(NodoAVL.derecho.nombreProducto) > 0) {
+            return rotarIzquierda(NodoAVL);
         }
+
+        // Caso de rotación izquierda-derecha
+        if (balance > 1 && nombreProducto.compareTo(NodoAVL.izquierdo.nombreProducto) > 0) {
+            NodoAVL.izquierdo = rotarIzquierda(NodoAVL.izquierdo);
+            return rotarDerecha(NodoAVL);
+        }
+
+        // Caso de rotación derecha-izquierda
+        if (balance < -1 && nombreProducto.compareTo(NodoAVL.derecho.nombreProducto) < 0) {
+            NodoAVL.derecho = rotarDerecha(NodoAVL.derecho);
+            return rotarIzquierda(NodoAVL);
+        }
+
+        return NodoAVL;
+    }
+
+    public void insertar(String nombreProducto, int precio) {
+        raiz = insertar(raiz, nombreProducto, precio);
+    }
     
-    //Postorden
-    public void postOrden(NodoArbolAVL r){
-    if(r!=null){
-    postOrden(r.hijoIzquierdo);
-    postOrden(r.hijoDerecho);
-    System.out.print(r.dato + ",");
-         }
-      }
+    public void recorridoInorden(NodoAVL nodo) {
+        if (nodo != null) {
+            recorridoInorden(nodo.izquierdo);
+            System.out.println("Nombre: " + nodo.nombreProducto + ", Precio: " + nodo.precio);
+            recorridoInorden(nodo.derecho);
+        }
+    }
+    
+    public void imprimirArbol(NodoAVL nodo, String espacio) {
+        if (nodo != null) {
+            imprimirArbol(nodo.derecho, espacio + "   ");
+            System.out.println(espacio + "|-- Nombre: " + nodo.nombreProducto + ", Precio: " + nodo.precio + ", Altura: " + nodo.altura);
+            imprimirArbol(nodo.izquierdo, espacio + "   ");
+        }
+    }
+
+    
+    //Guardar el arbol de cada pokemon
+    private void guardarNodos(NodoAVL nodo, String espacio, BufferedWriter bufferedWriter) throws IOException {
+    if (nodo != null) {
+        guardarNodos(nodo.derecho, espacio + "   ", bufferedWriter);
+        bufferedWriter.write(espacio + "|-- Nombre: " + nodo.nombreProducto + ", Precio: " + nodo.precio + ", Altura: " + nodo.altura + "\n");
+        guardarNodos(nodo.izquierdo, espacio + "   ", bufferedWriter);
+    }
+}
+    
+    public void guardarArbolEnArchivo(NodoAVL nodo, String espacio, String nombrePokemon) {
+    try {
+        String nombreArchivo = nombrePokemon+ ".txt";
+        FileWriter writer = new FileWriter(nombreArchivo);
+        BufferedWriter bufferedWriter = new BufferedWriter(writer);
+
+        guardarNodos(nodo, espacio, bufferedWriter);
+
+        bufferedWriter.close();
+        
+        File archivo = new File(nombreArchivo);
+        archivo.deleteOnExit();
+        
+    } catch (IOException e) {
+        e.printStackTrace();
+    }
+}
+
+    
     
 }
+
+   
+    
